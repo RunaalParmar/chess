@@ -6,9 +6,10 @@ By: Runaal Parmar
 Dec 9, 2018
 """
 import sys
-from piece import Piece
 import checks
+from piece import Piece
 from termcolor import colored
+from copy import deepcopy
 
 white_color = "blue"
 black_color = "red"
@@ -17,79 +18,86 @@ label_color = "white"
 
 class Board:
 	"""
-		Maps, prints and determines the legal moves for all 
-		pieces on the board
+		Maps, prints and moves for all pieces on the board
 	"""
 	def __init__(self):
 		"""
 			Initialize board for the beginning of play
 		"""
-		# Create board, initialized to blank spaces
-		self.map = [[" " for i in range(8)] for i in range(8)]
+		# create null piece object
+		null_piece = Piece(" ", " ", " ")
+
+		# Create board, initialized to null pieces
+		self.map = [[deepcopy(null_piece) for i in range(8)] for i in range(8)]
 
 		# Initialize pawns for both sides
 		for i in range(8):
-			self.map[1][i] = Piece("pawn", False, "\u265f", "1" + str(i))
-			self.map[6][i] = Piece("pawn", True, "\u2659", "6" + str(i))
+			self.map[1][i] = Piece("pawn", "black", "\u265f")
+			self.map[6][i] = Piece("pawn", "white", "\u2659")
 
 		# Initialize major pieces for black side 
-		self.map[0][0] = Piece("rook",   False, "\u265c", "00")
-		self.map[0][1] = Piece("knight", False, "\u265e", "01")
-		self.map[0][2] = Piece("bishop", False, "\u265d", "02")
-		self.map[0][3] = Piece("queen",  False, "\u265b", "03")
-		self.map[0][4] = Piece("king",   False, "\u265a", "04")
-		self.map[0][5] = Piece("bishop", False, "\u265d", "05")
-		self.map[0][6] = Piece("knight", False, "\u265e", "06")
-		self.map[0][7] = Piece("rook",   False, "\u265c", "07")
+		self.map[0][0] = Piece("rook",   "black", "\u265c")
+		self.map[0][1] = Piece("knight", "black", "\u265e")
+		self.map[0][2] = Piece("bishop", "black", "\u265d")
+		self.map[0][3] = Piece("queen",  "black", "\u265b")
+		self.map[0][4] = Piece("king",   "black", "\u265a")
+		self.map[0][5] = Piece("bishop", "black", "\u265d")
+		self.map[0][6] = Piece("knight", "black", "\u265e")
+		self.map[0][7] = Piece("rook",   "black", "\u265c")
 
 		# Initialize major pieces for white side 
-		self.map[7][0] = Piece("rook",   True, "\u2656", "70")
-		self.map[7][1] = Piece("knight", True, "\u2658", "71")
-		self.map[7][2] = Piece("bishop", True, "\u2657", "72")
-		self.map[7][3] = Piece("queen",  True, "\u2655", "73")
-		self.map[7][4] = Piece("king",   True, "\u2654", "74")
-		self.map[7][5] = Piece("bishop", True, "\u2657", "75")
-		self.map[7][6] = Piece("knight", True, "\u2658", "76")
-		self.map[7][7] = Piece("rook",   True, "\u2656", "77")
+		self.map[7][0] = Piece("rook",   "white", "\u2656")
+		self.map[7][1] = Piece("knight", "white", "\u2658")
+		self.map[7][2] = Piece("bishop", "white", "\u2657")
+		self.map[7][3] = Piece("queen",  "white", "\u2655")
+		self.map[7][4] = Piece("king",   "white", "\u2654")
+		self.map[7][5] = Piece("bishop", "white", "\u2657")
+		self.map[7][6] = Piece("knight", "white", "\u2658")
+		self.map[7][7] = Piece("rook",   "white", "\u2656")
 
 	def map_print(self):
 		"""
 			Prints the current state of the entire board
 		"""
+		# Print top border of the chess board
 		print(colored("\n ==", board_color), end="")
 		for i in range(8):
 			print(colored(chr(65+i), label_color), end="")
 			print(colored("=", board_color), end="")
 		print(colored("==", board_color))
 
+		# Print the board side and the labels
 		i = 8
 		row = 0
 		for rank in self.map:
 			print(" " + str(i) + colored("|", board_color), end="")
 			col = 0
 
+			# Print the pieces on the board
 			for square in rank:
 				tile = (row + col)%2
-				if square is " " and tile == 0:
+				if square.get_symbol() is " " and tile == 0:
 					print("\033[47;33m  \033[m", end="")
-				elif square is " " and tile == 1:
+				elif square.get_symbol() is " " and tile == 1:
 					print("\033[40;33m  \033[m", end="")
-				elif square.get_color() and tile == 0:
+				elif square.get_color() == "white" and tile == 0:
 					print(colored("\033[47;31m{} \033[m".format(square.get_symbol()), black_color), end="")
-				elif square.get_color() and tile == 1:
+				elif square.get_color() == "white" and tile == 1:
 					print(colored("\033[40;31m{} \033[m".format(square.get_symbol()), black_color), end="")
-				elif not square.get_color() and tile == 0:
-					print(colored("\033[47;31m{} \033[m".format(square.get_symbol()), white_color), end="")
-				elif not square.get_color() and tile == 1:
-					print(colored("\033[40;31m{} \033[m".format(square.get_symbol()), white_color), end="")
+				elif square.get_color() == "black" and tile == 0:
+					print(colored("\033[47;34m{} \033[m".format(square.get_symbol()), white_color), end="")
+				elif square.get_color() == "black" and tile == 1:
+					print(colored("\033[40;34m{} \033[m".format(square.get_symbol()), white_color), end="")
 				else:
-					print("Serious error")
+					print("Serious error printing the board")
 
 				col += 1
+			# Print the pieces on the board
 			row += 1
 			print(colored("|", board_color) + str(i))
 			i -= 1
 
+		# Print the bottom border and labels
 		print(colored(" ==", board_color), end="")
 		for i in range(8):
 			print(colored(chr(65+i), label_color), end="")
@@ -110,6 +118,7 @@ class Board:
 				print(colored("Encountered issues:" + err, "red"))
 				raise 
 
+			# special entries require seperate actions
 			if intake == "undo" or intake == "exit" or intake == "quit":
 				return intake
 
@@ -135,9 +144,7 @@ class Board:
 		"""
 			Moves pieces. Calls check valid to ensure legal moves.
 		"""
-		# collisions, valid for type, checks, etc
-
-		if self.map[cords[0]][cords[1]] == " ":
+		if self.map[cords[0]][cords[1]].get_symbol == " ":
 			print(colored("There is no piece on the starting square!", "red"))
 			return False
 
@@ -182,8 +189,6 @@ class Board:
 			print(colored("Cannot put your king into check!", "red"))
 			return False
 
-		self.map[cords[0]][cords[1]].set_loc(str(cords[2]) + str(cords[3]))
 		self.map[cords[2]][cords[3]] = self.map[cords[0]][cords[1]]
-		self.map[cords[0]][cords[1]] = " "
+		self.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
 		return True
-

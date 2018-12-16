@@ -13,20 +13,13 @@ class Piece:
 	"""
 		Standard piece definition
 	"""
-	def __init__(self, piece_type, color, symbol, loc):
+	def __init__(self, piece_type, color, symbol):
 		"""
 			Piece constructor
 		"""
 		self.piece_type = piece_type
 		self.color = color # Black = False, White = True
-		self.loc = loc
 		self.symbol = symbol
-
-	def get_loc(self):
-		"""
-			Get current location of piece
-		"""
-		return self.loc
 
 	def get_symbol(self):
 		"""
@@ -57,12 +50,6 @@ class Piece:
 			Sets new symbol for the piece
 		"""
 		self.symbol = new_symbol
-
-	def set_loc(self, new_loc):
-		"""
-			Sets new location for the piece
-		"""
-		self.loc = new_loc
 
 	def promote(self, cords):
 		"""
