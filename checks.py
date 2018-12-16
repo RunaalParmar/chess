@@ -4,8 +4,12 @@ checks.py - Defines the checks which prevent non-valid moves in chess
 By: Runaal Parmar 
 Dec 13, 2018
 """
-from cop import deepcopy
+from copy import deepcopy
 from termcolor import colored
+
+k_m = [
+	(1,2),(2,1),(-1,2),(-2,1),(1,-2),(2,-1),(-1,-2),(-2,-1)
+]
 
 def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 	"""
@@ -222,16 +226,21 @@ def is_own_piece(board, cords, player):
 	else:
 		return False
 
-def find_king(board, player):
-	k_cords = 
+def find_king(board):
+	k_cords = [9, 9, 9, 9]
 	for row in range(8):
 		for col in range(8):
-			if test_board.map[row][col].piece_type = "king":
-				if test_board.map[row][col].color:
-					k_cords = [row, col]
-					return bk_cords
+			if board.map[row][col] != " ":
+				if board.map[row][col].get_type() == "king":
+					if board.map[row][col].color:
+						k_cords[0] = row
+						k_cords[1] = col
+					if not(board.map[row][col].get_color()):
+						k_cords[2] = row
+						k_cords[3] = col
+	return k_cords
 
-def puts_king_in_check(board, cords, player)
+def puts_king_in_check(board, cords, player):
 	"""
 		Ensures the player does not place their own king in check.
 	"""
@@ -241,14 +250,48 @@ def puts_king_in_check(board, cords, player)
 	test_board.map[cords[2]][cords[3]] = test_board.map[cords[0]][cords[1]]
 	test_board.map[cords[0]][cords[1]] = " "
 
-	for row in test_board:
-		for square in row:
-			if test_board.map[]
+	k_cords = find_king(test_board)
 
+	if player == "white":
+		pk_cords = [k_cords[0], k_cords[1]]
+		player = True
+	else:
+		pk_cords = [k_cords[2], k_cords[3]]
+		player = False
 
+	for move in k_m:
+		row = pk_cords[0] + move[0]
+		col = pk_cords[1] + move[1]
+		if row < 8 and row >= 0 and col < 8 and col >= 0:
+			if test_board.map[row][col] != " ":
+				if test_board.map[row][col].get_type() == "knight":
+					print(str(test_board.map[row][col].get_color()) + str(player))
+					if (test_board.map[row][col].get_color() != player):
+						print(colored("In check from the Knight!", "red"))
+						return True
 
-
-
-
-
+	if player:
+		if test_board.map[pk_cords[0]-1][pk_cords[1]+1] != " ":
+			if test_board.map[pk_cords[0]-1][pk_cords[1]+1].get_type == "pawn":
+				if not(test_board.map[pk_cords[0]-1][pk_cords[1]+1].get_color):
+					print(colored("In check from the Pawn!", "red"))
+					return True
+		if test_board.map[pk_cords[0]-1][pk_cords[1]-1] != " ":
+			if test_board.map[pk_cords[0]-1][pk_cords[1]-1].get_type == "pawn":
+				if not(test_board.map[pk_cords[0]-1][pk_cords[1]-1].get_color):
+					print(colored("In check from the Pawn!", "red"))
+					return True
+	else:
+		if test_board.map[pk_cords[0]+1][pk_cords[1]+1] != " ":
+			if test_board.map[pk_cords[0]+1][pk_cords[1]+1].get_type == "pawn":
+				if test_board.map[pk_cords[0]+1][pk_cords[1]+1].get_color:
+					print(colored("In check from the Pawn!", "red"))
+					return True
+		if test_board.map[pk_cords[0]+1][pk_cords[1]-1] != " ":
+			if test_board.map[pk_cords[0]+1][pk_cords[1]-1].get_type == "pawn":
+				if test_board.map[pk_cords[0]+1][pk_cords[1]-1].get_color:
+					print(colored("In check from the Pawn!", "red"))
+					return True
+	print("king not in check")
+	return False 
 
