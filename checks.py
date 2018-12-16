@@ -265,33 +265,32 @@ def puts_king_in_check(board, cords, player):
 		if row < 8 and row >= 0 and col < 8 and col >= 0:
 			if test_board.map[row][col] != " ":
 				if test_board.map[row][col].get_type() == "knight":
-					print(str(test_board.map[row][col].get_color()) + str(player))
 					if (test_board.map[row][col].get_color() != player):
 						print(colored("In check from the Knight!", "red"))
 						return True
 
 	if player:
 		if test_board.map[pk_cords[0]-1][pk_cords[1]+1] != " ":
-			if test_board.map[pk_cords[0]-1][pk_cords[1]+1].get_type == "pawn":
-				if not(test_board.map[pk_cords[0]-1][pk_cords[1]+1].get_color):
+			if test_board.map[pk_cords[0]-1][pk_cords[1]+1].get_type() == "pawn":
+				if not(test_board.map[pk_cords[0]-1][pk_cords[1]+1].get_color()):
 					print(colored("In check from the Pawn!", "red"))
 					return True
 		if test_board.map[pk_cords[0]-1][pk_cords[1]-1] != " ":
-			if test_board.map[pk_cords[0]-1][pk_cords[1]-1].get_type == "pawn":
-				if not(test_board.map[pk_cords[0]-1][pk_cords[1]-1].get_color):
+			if test_board.map[pk_cords[0]-1][pk_cords[1]-1].get_type() == "pawn":
+				if not(test_board.map[pk_cords[0]-1][pk_cords[1]-1].get_color()):
 					print(colored("In check from the Pawn!", "red"))
 					return True
 	else:
 		if test_board.map[pk_cords[0]+1][pk_cords[1]+1] != " ":
-			if test_board.map[pk_cords[0]+1][pk_cords[1]+1].get_type == "pawn":
-				if test_board.map[pk_cords[0]+1][pk_cords[1]+1].get_color:
+			if test_board.map[pk_cords[0]+1][pk_cords[1]+1].get_type() == "pawn":
+				if test_board.map[pk_cords[0]+1][pk_cords[1]+1].get_color():
 					print(colored("In check from the Pawn!", "red"))
 					return True
 		if test_board.map[pk_cords[0]+1][pk_cords[1]-1] != " ":
-			if test_board.map[pk_cords[0]+1][pk_cords[1]-1].get_type == "pawn":
-				if test_board.map[pk_cords[0]+1][pk_cords[1]-1].get_color:
+			if test_board.map[pk_cords[0]+1][pk_cords[1]-1].get_type() == "pawn":
+				if test_board.map[pk_cords[0]+1][pk_cords[1]-1].get_color():
 					print(colored("In check from the Pawn!", "red"))
 					return True
-	print("king not in check")
+
 	return False 
 
