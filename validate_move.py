@@ -1,12 +1,10 @@
 """
-move_validation.py - Defines the checks which prevent non-valid moves in chess
+validate_move.py - Defines the checks which prevent non-valid moves in chess
 
 By: Runaal Parmar 
 Dec 17, 2018
 """
-from copy import deepcopy
 from termcolor import colored
-from piece import Piece
 
 def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 	"""
