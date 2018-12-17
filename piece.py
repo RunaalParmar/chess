@@ -51,7 +51,7 @@ class Piece:
 		"""
 		self.symbol = new_symbol
 
-	def promote(self, cords):
+	def promote(self, cords, player):
 		"""
 			Promotes a pawn
 		"""
@@ -63,7 +63,7 @@ class Piece:
 				print("Invalid Input")
 			else:
 				self.set_type(req_type)
-				if self.get_color():
+				if self.get_color() == "white":
 					if req_type == "queen":
 						self.set_symbol("\u2655")
 					elif req_type == "rook":

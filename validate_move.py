@@ -40,7 +40,7 @@ def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 	elif white_move or black_move:
 		if board.map[cords[2]][cords[3]].get_symbol() == " ":
 			if cords[2] == 7 or cords[2] == 0:
-				board.map[cords[0]][cords[1]].promote(cords)
+				board.map[cords[0]][cords[1]].promote(cords, player)
 			return True
 		else:
 			print(colored("Pawn cannot walk into opposing piece!", "red"))
@@ -53,7 +53,7 @@ def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 			return False
 		elif board.map[cords[2]][cords[3]].get_color() != player:
 			if cords[2] == 7 or cords[2] == 0:
-				board.map[cords[0]][cords[1]].promote(cords)
+				board.map[cords[0]][cords[1]].promote(cords, player)
 			return True
 
 	# Invalid move for the pawn

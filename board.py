@@ -182,13 +182,13 @@ class Board:
 				print(colored("This is not a valid move for a King!", "red"))
 				return False
 
-		elif type_of_piece == "pawn":
-			if not validate_move.is_valid_pawn_move(self, cords, player, row_vec, col_vec):
-				return False
-
 		if checks.puts_king_in_check(self, cords, player):
 			print(colored("Cannot put your king into check!", "red"))
 			return False
+
+		elif type_of_piece == "pawn":
+			if not validate_move.is_valid_pawn_move(self, cords, player, row_vec, col_vec):
+				return False
 
 		self.map[cords[2]][cords[3]] = self.map[cords[0]][cords[1]]
 		self.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
