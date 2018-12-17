@@ -8,8 +8,12 @@ from copy import deepcopy
 from termcolor import colored
 from piece import Piece
 
-k_m = [
+knight_moves = [
 	(1,2),(2,1),(-1,2),(-2,1),(1,-2),(2,-1),(-1,-2),(-2,-1)
+]
+
+king_moves = [
+	(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)
 ]
 
 def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
@@ -272,7 +276,7 @@ def puts_king_in_check(board, cords, player):
 		pk_cords = [k_cords[2], k_cords[3]]
 
 	# Determine if king would be in check from enemy knight
-	for move in k_m:
+	for move in knight_moves:
 		row = pk_cords[0] + move[0]
 		col = pk_cords[1] + move[1]
 		if row < 8 and row >= 0 and col < 8 and col >= 0:
@@ -300,6 +304,22 @@ def puts_king_in_check(board, cords, player):
 			if test_board.map[pk_cords[0]+1][pk_cords[1]-1].get_color() != player:
 				print(colored("In check from the Pawn!", "red"))
 				return True
+
+	# Determine if king would be in check from enemy king
+	for move in king_moves:
+		row = pk_cords[0] + move[0]
+		col = pk_cords[1] + move[1]
+		if row < 8 and row >= 0 and col < 8 and col >= 0:
+			if test_board.map[row][col].get_type() == "king":
+				print(colored("Cannot move into check from enemy king"))
+				return True
+
+
+
+
+
+
+
 
 	return False 
 
