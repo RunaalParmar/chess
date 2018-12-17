@@ -86,36 +86,32 @@ def in_check_from_cardinal(board, pk_cords, player):
 	left_flag = " "
 	right_flag = " "
 
-	for i in range(8):
+	for i in range(1, 8):
 		# Ensure no checks from above:
 		if pk_cords[0] - i > 0:
 			if up_flag == " ":
-				if board.map[pk_cords[0]-i][pk_cords[1]].get_color() != player:
-					up_flag = board.map[pk_cords[0]-i][pk_cords[1]].get_type()
+				up_flag = board.map[pk_cords[0]-i][pk_cords[1]].get_type()
 		if up_flag == "queen" or up_flag == "rook":
 			return True
 
 		# Ensure no checks from below:
 		if pk_cords[0] + i < 8:
 			if down_flag == " ":
-				if board.map[pk_cords[0]+i][pk_cords[1]].get_color() != player:
-					down_flag = board.map[pk_cords[0]+i][pk_cords[1]].get_type()
+				down_flag = board.map[pk_cords[0]+i][pk_cords[1]].get_type()
 		if down_flag == "queen" or down_flag == "rook":
 			return True
 
 		# Ensure no checks from the left:
 		if pk_cords[1] - i > 0:
 			if left_flag == " ":
-				if board.map[pk_cords[0]][pk_cords[1]-i].get_color() != player:
-					left_flag = board.map[pk_cords[0]][pk_cords[1]-i].get_type()
+				left_flag = board.map[pk_cords[0]][pk_cords[1]-i].get_type()
 		if left_flag == "queen" or left_flag == "rook":
 			return True
 
 		# Ensure no checks from the right:
 		if pk_cords[1] + i < 8:
 			if right_flag == " ":
-				if board.map[pk_cords[0]][pk_cords[1]+i].get_color() != player:
-					right_flag = board.map[pk_cords[0]][pk_cords[1]+i].get_type()
+				right_flag = board.map[pk_cords[0]][pk_cords[1]+i].get_type()
 		if right_flag == "queen" or right_flag == "rook":
 			return True
 

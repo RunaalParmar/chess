@@ -18,7 +18,7 @@ class Piece:
 			Piece constructor
 		"""
 		self.piece_type = piece_type
-		self.color = color # Black = False, White = True
+		self.color = color
 		self.symbol = symbol
 
 	def get_symbol(self):
