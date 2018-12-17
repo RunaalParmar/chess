@@ -7,6 +7,7 @@ Dec 9, 2018
 """
 import sys
 import checks
+import validate_move
 from piece import Piece
 from termcolor import colored
 from copy import deepcopy
@@ -148,11 +149,11 @@ class Board:
 			print(colored("There is no piece on the starting square!", "red"))
 			return False
 
-		if not(checks.is_own_piece(self, cords, player)):
+		if not(validate_move.is_own_piece(self, cords, player)):
 			print(colored("Not your turn! Move only your own pieces", "red"))
 			return False
 
-		if checks.is_attacking_own_piece(self, cords):
+		if validate_move.is_attacking_own_piece(self, cords):
 			print(colored("Cannot attack your own piece!", "red"))
 			return False
 
@@ -161,28 +162,28 @@ class Board:
 		col_vec = cords[3] - cords[1]
 
 		if type_of_piece == "rook":
-			if not checks.is_valid_rook_move(self, cords, row_vec, col_vec):
+			if not validate_move.is_valid_rook_move(self, cords, row_vec, col_vec):
 				return False
 
 		elif type_of_piece == "bishop":
-			if not checks.is_valid_bishop_move(self, cords, row_vec, col_vec):
+			if not validate_move.is_valid_bishop_move(self, cords, row_vec, col_vec):
 				return False
 
 		elif type_of_piece == "queen":
-			if not checks.is_valid_queen_move(self, cords, row_vec, col_vec):
+			if not validate_move.is_valid_queen_move(self, cords, row_vec, col_vec):
 				return False
 
 		elif type_of_piece == "knight":
-			if not checks.is_valid_knight_move(self, row_vec, col_vec):
+			if not validate_move.is_valid_knight_move(self, row_vec, col_vec):
 				return False
 
 		elif type_of_piece == "king":
-			if not checks.is_valid_king_move(self, row_vec, col_vec):
+			if not validate_move.is_valid_king_move(self, row_vec, col_vec):
 				print(colored("This is not a valid move for a King!", "red"))
 				return False
 
 		elif type_of_piece == "pawn":
-			if not checks.is_valid_pawn_move(self, cords, player, row_vec, col_vec):
+			if not validate_move.is_valid_pawn_move(self, cords, player, row_vec, col_vec):
 				return False
 
 		if checks.puts_king_in_check(self, cords, player):
