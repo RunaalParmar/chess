@@ -81,39 +81,43 @@ def in_check_from_cardinal(board, pk_cords, player):
 	"""
 		Determine if in check from enemy rook or queen (non diagonal)
 	"""
-	up_flag = " "
-	down_flag = " "
-	left_flag = " "
-	right_flag = " "
+	up_flag = Piece(" ", " ", " ") 
+	down_flag = Piece(" ", " ", " ") 
+	left_flag = Piece(" ", " ", " ") 
+	right_flag = Piece(" ", " ", " ") 
 
 	for i in range(1, 8):
 		# Ensure no checks from above:
 		if pk_cords[0] - i > 0:
-			if up_flag == " ":
-				up_flag = board.map[pk_cords[0]-i][pk_cords[1]].get_type()
-		if up_flag == "queen" or up_flag == "rook":
-			return True
+			if up_flag.get_type() == " ":
+				up_flag = board.map[pk_cords[0]-i][pk_cords[1]]
+		if up_flag.get_color() != player:
+			if up_flag.get_type() == "queen" or up_flag.get_type() == "rook":
+				return True
 
 		# Ensure no checks from below:
 		if pk_cords[0] + i < 8:
-			if down_flag == " ":
-				down_flag = board.map[pk_cords[0]+i][pk_cords[1]].get_type()
-		if down_flag == "queen" or down_flag == "rook":
-			return True
+			if down_flag.get_type() == " ":
+				down_flag = board.map[pk_cords[0]+i][pk_cords[1]]
+		if down_flag.get_color() != player:
+			if down_flag.get_type() == "queen" or down_flag.get_type() == "rook":
+				return True
 
 		# Ensure no checks from the left:
 		if pk_cords[1] - i > 0:
-			if left_flag == " ":
-				left_flag = board.map[pk_cords[0]][pk_cords[1]-i].get_type()
-		if left_flag == "queen" or left_flag == "rook":
-			return True
+			if left_flag.get_type() == " ":
+				left_flag = board.map[pk_cords[0]][pk_cords[1]-i]
+		if left_flag.get_color() != player:
+			if left_flag.get_type() == "queen" or left_flag.get_type() == "rook":
+				return True
 
 		# Ensure no checks from the right:
 		if pk_cords[1] + i < 8:
-			if right_flag == " ":
-				right_flag = board.map[pk_cords[0]][pk_cords[1]+i].get_type()
-		if right_flag == "queen" or right_flag == "rook":
-			return True
+			if right_flag.get_type() == " ":
+				right_flag = board.map[pk_cords[0]][pk_cords[1]+i]
+		if right_flag.get_color != player:
+			if right_flag.get_type() == "queen" or right_flag.get_type() == "rook":
+				return True
 
 	return False
 
