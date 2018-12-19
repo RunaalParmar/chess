@@ -81,50 +81,72 @@ def in_check_from_cardinal(board, pk_cords, player):
 	"""
 		Determine if in check from enemy rook or queen (non diagonal)
 	"""
-	up_flag = Piece(" ", " ", " ") 
-	down_flag = Piece(" ", " ", " ") 
-	left_flag = Piece(" ", " ", " ") 
-	right_flag = Piece(" ", " ", " ") 
+	null_piece = Piece(" ", " ", " ")
+	flag = [deepcopy(null_piece) for i in range(4)]
 
 	for i in range(1, 8):
 		# Ensure no checks from above:
 		if pk_cords[0] - i > 0:
-			if up_flag.get_type() == " ":
-				up_flag = board.map[pk_cords[0]-i][pk_cords[1]]
-		if up_flag.get_color() != player:
-			if up_flag.get_type() == "queen" or up_flag.get_type() == "rook":
-				return True
+			if flag[0].get_type() == " ":
+				flag[0] = board.map[pk_cords[0]-i][pk_cords[1]]
 
 		# Ensure no checks from below:
 		if pk_cords[0] + i < 8:
-			if down_flag.get_type() == " ":
-				down_flag = board.map[pk_cords[0]+i][pk_cords[1]]
-		if down_flag.get_color() != player:
-			if down_flag.get_type() == "queen" or down_flag.get_type() == "rook":
-				return True
+			if flag[1].get_type() == " ":
+				flag[1] = board.map[pk_cords[0]+i][pk_cords[1]]
 
 		# Ensure no checks from the left:
 		if pk_cords[1] - i > 0:
-			if left_flag.get_type() == " ":
-				left_flag = board.map[pk_cords[0]][pk_cords[1]-i]
-		if left_flag.get_color() != player:
-			if left_flag.get_type() == "queen" or left_flag.get_type() == "rook":
-				return True
+			if flag[2].get_type() == " ":
+				flag[2] = board.map[pk_cords[0]][pk_cords[1]-i]
 
 		# Ensure no checks from the right:
 		if pk_cords[1] + i < 8:
-			if right_flag.get_type() == " ":
-				right_flag = board.map[pk_cords[0]][pk_cords[1]+i]
-		if right_flag.get_color != player:
-			if right_flag.get_type() == "queen" or right_flag.get_type() == "rook":
+			if flag[3].get_type() == " ":
+				flag[3] = board.map[pk_cords[0]][pk_cords[1]+i]
+
+	for threat in flag:
+		if threat.get_color() != player:
+			if threat.get_type() == "queen" or threat.get_type() == "rook":
 				return True
 
+	# King is not in check from cardinal direction!
 	return False
 
 def in_check_from_diagonal(board, pk_cords, player):
 	"""
 		Determines if in check from a diagonal queen/bishop
 	"""
+	null_piece = Piece(" ", " ", " ")
+	flag = [deepcopy(null_piece) for i in range(4)]
+
+	for i in range(1, 8):
+		# Ensure no checks a1 diagonal:
+		if pk_cords[0] + i < 8 and pk_cords[1] - i > 0:
+			if flag[0].get_type() == " ":
+				flag[0] = board.map[pk_cords[0]+i][pk_cords[1]-i]
+
+		# Ensure no checks a8 diagonal:
+		if pk_cords[0] - i > 0 and pk_cords[1] - i > 0:
+			if flag[1].get_type() == " ":
+				flag[1] = board.map[pk_cords[0]-i][pk_cords[1]-i]
+
+		# Ensure no checks h1 diagonal:
+		if pk_cords[0] + i < 8 and pk_cords[1] + i < 8:
+			if flag[2].get_type() == " ":
+				flag[2] = board.map[pk_cords[0]+i][pk_cords[1]+i]
+
+		# Ensure no checks h8 diagonal:
+		if pk_cords[0] - i > 0 and pk_cords[1] + i < 8:
+			if flag[3].get_type() == " ":
+				flag[3] = board.map[pk_cords[0]-i][pk_cords[1]+i]
+
+	for threat in flag:
+		if threat.get_color() != player:
+			if threat.get_type() == "queen" or threat.get_type() == "bishop":
+				return True
+
+	# If this point is reached, king is not in check from diagonal direction!
 	return False
 
 def puts_king_in_check(board, cords, player):
