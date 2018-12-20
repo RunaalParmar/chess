@@ -67,6 +67,7 @@ def is_valid_king_move(board, row_vec, col_vec):
 	"""
 	# The King can move one step in any direction
 	if abs(row_vec) > 1 or abs(col_vec) > 1:
+		print(colored("This is not a valid move for a King!", "red"))
 		return False
 	else:
 		return True

@@ -145,6 +145,9 @@ class Board:
 		"""
 			Moves pieces. Calls check valid to ensure legal moves.
 		"""
+		if cords[0] > 7 or cords[1] > 7 or cords[0] < 0 or cords[1] < 0:
+			return False
+
 		if self.map[cords[0]][cords[1]].get_symbol == " ":
 			print(colored("There is no piece on the starting square!", "red"))
 			return False
@@ -179,7 +182,6 @@ class Board:
 
 		elif type_of_piece == "king":
 			if not validate_move.is_valid_king_move(self, row_vec, col_vec):
-				print(colored("This is not a valid move for a King!", "red"))
 				return False
 
 		# Create duplicate board
