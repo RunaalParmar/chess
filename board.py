@@ -189,8 +189,9 @@ class Board:
 		test_board.map[cords[2]][cords[3]] = test_board.map[cords[0]][cords[1]]
 		test_board.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
 
-		if checks.is_king_in_check(test_board, player):
-			print(colored("Cannot leave your king into check!", "red"))
+		threats = checks.is_king_in_check(test_board, player)
+		if threats[0]:
+			print(colored("Cannot leave your king in check!", "red"))
 			return False
 
 		elif type_of_piece == "pawn":

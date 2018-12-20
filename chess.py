@@ -27,20 +27,24 @@ turn_num = 1
 
 while True:
 	my_board.map_print()
-
 	player = get_player(turn_num)
+
+	vec = checks.is_king_in_check(my_board, player)
+	if vec[0]:
+		print(colored("CHECK!", "red"))
+
 	cords = None
-	cords = checks.is_mate(my_board, player)
+	cords = checks.is_mate(my_board, player, vec)
 
 	if cords == "checkmate":
 		print(colored("The " + player + " king is in checkmate!", "green"))
 		winner = get_player(turn_num - 1)
 		print(colored("The " + winner + " is the winner!", "green"))
-		cords == "exit"
+		cords = "exit"
 	elif cords == "stalemate":
 		print(colored("The " + player + " king is in stalemate!", "green"))
 		print(colored("The match ends in a draw!", "green"))
-		cords == "exit"
+		cords = "exit"
 	elif cords == None:
 		cords = my_board.clean_intake(player) 
 
