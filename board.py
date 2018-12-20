@@ -182,8 +182,15 @@ class Board:
 				print(colored("This is not a valid move for a King!", "red"))
 				return False
 
-		if checks.puts_king_in_check(self, cords, player):
-			print(colored("Cannot put your king into check!", "red"))
+		# Create duplicate board
+		test_board = deepcopy(self)
+
+		# Make the desired move on duplicate board
+		test_board.map[cords[2]][cords[3]] = test_board.map[cords[0]][cords[1]]
+		test_board.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
+
+		if checks.is_king_in_check(test_board, player):
+			print(colored("Cannot leave your king into check!", "red"))
 			return False
 
 		elif type_of_piece == "pawn":

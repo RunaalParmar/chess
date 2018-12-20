@@ -7,6 +7,7 @@ Dec 9, 2018
 from copy import deepcopy
 from termcolor import colored
 from board import Board
+import checks
 
 def get_player(turn_num):
 	"""
@@ -29,7 +30,19 @@ while True:
 
 	player = get_player(turn_num)
 	cords = None
-	cords = my_board.clean_intake(player) 
+	cords = checks.is_mate(my_board, player)
+
+	if cords == "checkmate":
+		print(colored("The " + player + " king is in checkmate!", "green"))
+		winner = get_player(turn_num - 1)
+		print(colored("The " + winner + " is the winner!", "green"))
+		cords == "exit"
+	elif cords == "stalemate":
+		print(colored("The " + player + " king is in stalemate!", "green"))
+		print(colored("The match ends in a draw!", "green"))
+		cords == "exit"
+	elif cords == None:
+		cords = my_board.clean_intake(player) 
 
 	if cords == "undo":
 		if turn_num == 1:

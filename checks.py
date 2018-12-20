@@ -105,6 +105,7 @@ def in_check_from_cardinal(board, pk_cords, player):
 			if flag[3].get_type() == " ":
 				flag[3] = board.map[pk_cords[0]][pk_cords[1]+i]
 
+	# Check all flags for threats from cardinal directions
 	for threat in flag:
 		if threat.get_color() != player:
 			if threat.get_type() == "queen" or threat.get_type() == "rook":
@@ -141,6 +142,7 @@ def in_check_from_diagonal(board, pk_cords, player):
 			if flag[3].get_type() == " ":
 				flag[3] = board.map[pk_cords[0]-i][pk_cords[1]+i]
 
+	# Check each flag for a threatening piece
 	for threat in flag:
 		if threat.get_color() != player:
 			if threat.get_type() == "queen" or threat.get_type() == "bishop":
@@ -149,44 +151,75 @@ def in_check_from_diagonal(board, pk_cords, player):
 	# If this point is reached, king is not in check from diagonal direction!
 	return False
 
-def puts_king_in_check(board, cords, player):
+def is_king_in_check(board, player):
 	"""
 		Ensures the player does not place their own king in check.
 	"""
-	# Create duplicate board
-	test_board = deepcopy(board)
-
-	# Make the desired move on duplicate board
-	test_board.map[cords[2]][cords[3]] = test_board.map[cords[0]][cords[1]]
-	test_board.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
-
-	# Find cordinate of kings, and save own king locatino
-	pk_cords = find_king(test_board, player)
+	# Find cordinates of the king
+	pk_cords = find_king(board, player)
 
 	# In check from enemy knight?
-	if in_check_from_knight(test_board, pk_cords, player):
+	if in_check_from_knight(board, pk_cords, player):
 		print(colored("In check from the Knight!", "red"))
 		return True
 
 	# In check from enemy pawn?
-	if in_check_from_pawn(test_board, pk_cords, player):
+	if in_check_from_pawn(board, pk_cords, player):
 		print(colored("In check from the Pawn!", "red"))
 		return True
 		
 	# In check from enemy king?
-	if in_check_from_king(test_board, pk_cords, player):
+	if in_check_from_king(board, pk_cords, player):
 		print(colored("In check from the enemy King!", "red"))
 		return True
 
 	# In check from cardinal direction? queen/rook
-	if in_check_from_cardinal(test_board, pk_cords, player):
+	if in_check_from_cardinal(board, pk_cords, player):
 		print(colored("Cannot move into or stay in check!"))
 		return True
 
 	# In check from diagonal direction? queen/bishop
-	if in_check_from_diagonal(test_board, pk_cords, player):
+	if in_check_from_diagonal(board, pk_cords, player):
 		print(colored("Cannot move into or stay in check!"))
 		return True
 
+	# The king is not in check from any direction
 	return False 
+
+def is_mate(board, player):
+	"""
+		Determine if the king is in checkmate or stalemate, 
+		returns a string to indicate the result
+	"""
+	return None
+
+	# Find cordinates of the king
+	pk_cords = find_king(board, player)
+
+	# Check if it is possible to move out of the way
+	for move in king_moves:
+		test_board = deepcopy(board)
+
+		k_cords = [pk_cords[0] + move[0], pk_cords[1] + move[1]]
+
+        test_board.map[k_cords[0]][k_cords[1]] = test_board.map[pk_cords[0]][pk_cords[1]]
+        test_board.map[pk_cords[0]][pk_cords[1]] = Piece(" ", " ", " ")
+
+		if not(is_king_in_check(test_board, player)):
+			return None
+
+	# Check if it is possible to take the offending piece
+	
+
+
+
+
+
+
+
+
+
+
+
+
 
