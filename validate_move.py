@@ -218,7 +218,9 @@ def is_attacking_own_piece(board, cords):
 	"""
 	atk_piece_color = board.map[cords[0]][cords[1]].get_color()
 	def_piece_color = board.map[cords[2]][cords[3]].get_color()
-	if atk_piece_color is def_piece_color:
+	if atk_piece_color == " " or def_piece_color == " ":
+		return False
+	elif atk_piece_color is def_piece_color:
 		return True
 	else:
 		return False

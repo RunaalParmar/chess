@@ -161,7 +161,7 @@ class Board:
 			vec = [False, "Cannot attack your own piece!"]
 
 		# Ensure a piece is being selected for the starting square
-		if self.map[cords[0]][cords[1]].get_symbol == " ":
+		if self.map[cords[0]][cords[1]].get_symbol() == " ":
 			vec = [False, "There is no piece on the starting square!"]
 
 		# return an error message is something is wrong
