@@ -29,12 +29,10 @@ while True:
 	my_board.map_print()
 	player = get_player(turn_num)
 
-	vec = checks.is_king_in_check(my_board, player)
-	if vec[0]:
+	if checks.is_king_in_check(my_board, player):
 		print(colored("CHECK!", "red"))
 
-	cords = None
-	cords = checks.is_mate(my_board, player, vec)
+	cords = checks.is_mate(my_board, player)
 
 	if cords == "checkmate":
 		print(colored("The " + player + " king is in checkmate!", "green"))
@@ -59,7 +57,9 @@ while True:
 		print(colored("Exiting...", "red"))
 		exit()
 	else:
-		if my_board.move(cords, player):
+		vec = my_board.move(cords, player)
+		if vec[0]:
 			saved_boards.insert(turn_num, deepcopy(my_board))
 			turn_num += 1
-
+		else:
+			print(colored(vec[1], "red"))

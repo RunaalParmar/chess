@@ -10,6 +10,9 @@ def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 	"""
 		Checks if the requested move is valid for a pawn
 	"""
+	# Define default return
+	vec = [True]
+
 	# Determine if the move/attack is valid for either player
 	if player == "black" and col_vec == 0 and row_vec == 1:
 		black_move = True
@@ -30,66 +33,66 @@ def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 
 	# Either color moving the pawn 2 steps
 	if col_vec == 0 and abs(row_vec) == 2:
-		if cords[0] == 1 or cords[0] == 6:
-			return True
-		else:
-			print(colored("Pawn can only move 2 spaces on its first move!", "red"))
-			return False
+		if cords[0] != 1 and cords[0] != 6:
+			vec = [False, "Pawn can only move 2 spaces on its first move!"]
 
 	# Either color moving the pawn 1 step
 	elif white_move or black_move:
 		if board.map[cords[2]][cords[3]].get_symbol() == " ":
 			if cords[2] == 7 or cords[2] == 0:
 				board.map[cords[0]][cords[1]].promote(cords, player)
-			return True
 		else:
-			print(colored("Pawn cannot walk into opposing piece!", "red"))
-			return False
+			vec = [False, "Pawn cannot walk into opposing piece!"]
 
 	# Either color attacking with the pawn
 	elif white_attacking or black_attacking:
 		if board.map[cords[2]][cords[3]].get_symbol() == " ":
-			print(colored("No pieces for the pawn to attack!", "red"))
-			return False
+			vec = [False, "No pieces for the pawn to attack!"]
 		elif board.map[cords[2]][cords[3]].get_color() != player:
 			if cords[2] == 7 or cords[2] == 0:
 				board.map[cords[0]][cords[1]].promote(cords, player)
-			return True
 
 	# Invalid move for the pawn
 	else:
-		print(colored("This is not a valid move for a pawn!", "red"))
-		return False
+		vec = [False, "This is not a valid move for a pawn!"]
+
+	return vec
 
 def is_valid_king_move(board, row_vec, col_vec):
 	"""
 		Checks if the requested move is valid for the king
 	"""
+	# Default return
+	vec = [True]
+
 	# The King can move one step in any direction
 	if abs(row_vec) > 1 or abs(col_vec) > 1:
-		print(colored("This is not a valid move for a King!", "red"))
-		return False
-	else:
-		return True
+		vec = [False, "This is not a valid move for a King!"]
+	return vec
 
 def is_valid_knight_move(board, row_vec, col_vec):
 	"""
 		Checks if the requested move is valid for the knight
 	"""
+	# Define default return
+	vec = [True]
+
 	# Checks all 8 moves for the knight
-	if abs(row_vec) == 2:
-		if abs(col_vec) == 1:
-			return True
-	elif abs(row_vec) == 1:
-		if abs(col_vec) == 2:
-			return True
-	print(colored("This is not a valid move for a Knight!", "red"))
-	return False
+	if abs(row_vec) == 2 and abs(col_vec) == 1:
+		return vec
+	elif abs(row_vec) == 1 and abs(col_vec) == 2:
+		return vec
+
+	vec = [False, "This is not a valid move for a Knight!"]
+	return vec
 
 def is_valid_queen_move(board, cords, row_vec, col_vec):
 	"""
 		Checks if the requested move is valid for the queen
 	"""
+	# Define default return
+	vec = [True]
+
 	collision = None
 	# Checks diagonal 1
 	if row_vec == col_vec:
@@ -128,20 +131,21 @@ def is_valid_queen_move(board, cords, row_vec, col_vec):
 				collision = "yes"
 			start += 1
 	else:
-		print(colored("This is not a valid move for a Queen!", "red"))
-		return False
+		vec = [False, "This is not a valid move for a Queen!"]
+		return vec
 
-	# If no collisions occured, move is good!
-	if collision != "yes":
-		return True
-	else:
-		print(colored("The Queen cannot pass through pieces!", "red"))
-		return False
+	# If collisions occured, move is bad!
+	if collision == "yes":
+		vec = [False, "The Queen cannot pass through pieces!"]
+	return vec
 
 def is_valid_bishop_move(board, cords, row_vec, col_vec):
 	"""
 		Checks if the requested move is valid for the bishop
 	"""
+	# Define default return
+	vec = [True]
+
 	collision = None
 	# Checks the diagonal if the move is valid
 	if row_vec == col_vec:
@@ -164,20 +168,22 @@ def is_valid_bishop_move(board, cords, row_vec, col_vec):
 			row1 += 1
 			col1 -= 1
 	else:
-		print(colored("This is not a valid move for a Bishop!", "red"))
-		return False
+		vec = [False, "This is not a valid move for a Bishop!"]
+		return vec
 
-	# If no collisions, move is good!
-	if collision != "yes":
-		return True
-	else:
-		print(colored("The bishop cannot pass through pieces!", "red"))
-		return False
+	# If collisions occured, move is bad!
+	if collision == "yes":
+		vec = [False, "The bishop cannot pass through pieces!"]
+
+	return vec
 
 def is_valid_rook_move(board, cords, row_vec, col_vec):
 	"""
 		Checks if the requested move is valid for the rook
 	"""
+	# Define default return
+	vec = [True]
+
 	collision = None
 	# Checks the row if the move is valid
 	if row_vec == 0:
@@ -196,15 +202,14 @@ def is_valid_rook_move(board, cords, row_vec, col_vec):
 				collision = "yes"
 			start += 1
 	else:
-		print(colored("This is not a valid move for a Rook!", "red"))
-		return False
+		vec = [False, "This is not a valid move for a Rook!"]
+		return vec
 
 	# If no collisions, move is good!
-	if collision != "yes":
-		return True
-	else:
-		print(colored("The rook cannot pass through pieces!", "red"))
-		return False
+	if collision == "yes":
+		vec = [False, "The rook cannot pass through pieces!"]
+
+	return vec
 
 def is_attacking_own_piece(board, cords):
 	"""

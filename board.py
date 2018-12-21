@@ -145,44 +145,57 @@ class Board:
 		"""
 			Moves pieces. Calls check valid to ensure legal moves.
 		"""
+		# Define default return to be overwritten:
+		vec = [True, "default message"]
+
+		# Ensure input/output coordinates are in the array bounds
 		if cords[0] > 7 or cords[1] > 7 or cords[0] < 0 or cords[1] < 0:
 			return False
 
-		if self.map[cords[0]][cords[1]].get_symbol == " ":
-			print(colored("There is no piece on the starting square!", "red"))
-			return False
-
+		# Ensure the player is moving their own pieces
 		if not(validate_move.is_own_piece(self, cords, player)):
-			print(colored("Not your turn! Move only your own pieces", "red"))
-			return False
+			vec = [False, "Not your turn! Move only your own pieces"]
 
+		# Ensure the destination piece is not a friendly piece
 		if validate_move.is_attacking_own_piece(self, cords):
-			print(colored("Cannot attack your own piece!", "red"))
-			return False
+			vec = [False, "Cannot attack your own piece!"]
 
+		# Ensure a piece is being selected for the starting square
+		if self.map[cords[0]][cords[1]].get_symbol == " ":
+			vec = [False, "There is no piece on the starting square!"]
+
+		# return an error message is something is wrong
+		if not(vec[0]):
+			return vec
+
+		# Calculate the vectors of the movement for future use
 		type_of_piece = self.map[cords[0]][cords[1]].get_type()
 		row_vec = cords[2] - cords[0]
 		col_vec = cords[3] - cords[1]
 
+		# Validate the move for a rook
 		if type_of_piece == "rook":
-			if not validate_move.is_valid_rook_move(self, cords, row_vec, col_vec):
-				return False
+			vec = validate_move.is_valid_rook_move(self, cords, row_vec, col_vec)
 
+		# Validate the move for a bishop
 		elif type_of_piece == "bishop":
-			if not validate_move.is_valid_bishop_move(self, cords, row_vec, col_vec):
-				return False
+			vec = validate_move.is_valid_bishop_move(self, cords, row_vec, col_vec)
 
+		# Validate the move for a queen
 		elif type_of_piece == "queen":
-			if not validate_move.is_valid_queen_move(self, cords, row_vec, col_vec):
-				return False
+			vec = validate_move.is_valid_queen_move(self, cords, row_vec, col_vec)
 
+		# Validate the move for a knight
 		elif type_of_piece == "knight":
-			if not validate_move.is_valid_knight_move(self, row_vec, col_vec):
-				return False
+			vec = validate_move.is_valid_knight_move(self, row_vec, col_vec)
 
+		# Validate the move for a king
 		elif type_of_piece == "king":
-			if not validate_move.is_valid_king_move(self, row_vec, col_vec):
-				return False
+			vec = validate_move.is_valid_king_move(self, row_vec, col_vec)
+
+		# return an error message is something is wrong
+		if not(vec[0]):
+			return vec
 
 		# Create duplicate board
 		test_board = deepcopy(self)
@@ -191,15 +204,18 @@ class Board:
 		test_board.map[cords[2]][cords[3]] = test_board.map[cords[0]][cords[1]]
 		test_board.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
 
-		threats = checks.is_king_in_check(test_board, player)
-		if threats[0]:
-			print(colored("Cannot leave your king in check!", "red"))
-			return False
+		# Ensure the move does not leave the king in check
+		threat = checks.is_king_in_check(test_board, player)
+		if threat:
+			vec = [False, "Cannot leave your king in check!"]
 
+		# Validate the move for a pawn
 		elif type_of_piece == "pawn":
-			if not validate_move.is_valid_pawn_move(self, cords, player, row_vec, col_vec):
-				return False
+			vec = validate_move.is_valid_pawn_move(self, cords, player, row_vec, col_vec)
 
-		self.map[cords[2]][cords[3]] = self.map[cords[0]][cords[1]]
-		self.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
-		return True
+		# return an error message is something is wrong
+		if vec[0]:
+			self.map[cords[2]][cords[3]] = self.map[cords[0]][cords[1]]
+			self.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
+
+		return vec
