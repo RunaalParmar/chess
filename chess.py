@@ -37,7 +37,7 @@ while True:
 	if cords == "checkmate":
 		print(colored("The " + player + " king is in checkmate!", "green"))
 		winner = get_player(turn_num - 1)
-		print(colored("The " + winner + " is the winner!", "green"))
+		print(colored("The " + winner + " side is the winner!", "green"))
 		cords = "exit"
 	elif cords == "stalemate":
 		print(colored("The " + player + " king is in stalemate!", "green"))

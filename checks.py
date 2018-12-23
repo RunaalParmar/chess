@@ -16,6 +16,30 @@ king_moves = [
 	(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)
 ]
 
+b_pawn_moves = [
+	(2,0),(1,0),(1,1),(1,-1)
+]
+
+w_pawn_moves = [
+	(-2,0),(-1,0),(-1,1),(-1,-1)
+]
+
+rook_moves = [
+	(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),
+	(0,-1),(0,-2),(0,-3),(0,-4),(0,-5),(0,-6),(0,-7),
+	(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),
+	(-1,0),(-2,0),(-3,0),(-4,0),(-5,0),(-6,0),(-7,0)
+]
+
+bishop_moves = [
+	(1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),
+	(-1,-1),(-2,-2),(-3,-3),(-4,-4),(-5,-5),(-6,-6),(-7,-7),
+	(1,-1),(2,-2),(3,-3),(4,-4),(5,-5),(6,-6),(7,-7),
+	(-1,1),(-2,2),(-3,3),(-4,4),(-5,5),(-6,6),(-7,7)
+]
+
+queen_moves = rook_moves + bishop_moves
+
 def find_king(board, player):
 	"""
 		Find and return the coordinates of own kings
@@ -72,7 +96,6 @@ def in_check_from_king(board, pk_cords, player):
 		col = pk_cords[1] + move[1]
 		if row < 8 and row >= 0 and col < 8 and col >= 0:
 			if board.map[row][col].get_type() == "king":
-				print(colored("Cannot move into check from enemy king"))
 				return True
 	return False
 
@@ -160,19 +183,19 @@ def is_king_in_check(board, player):
 		return True
 
 	# In check from enemy pawn?
-	if in_check_from_pawn(board, pk_cords, player):
+	elif in_check_from_pawn(board, pk_cords, player):
 		return True
 		
 	# In check from enemy king?
-	if in_check_from_king(board, pk_cords, player):
+	elif in_check_from_king(board, pk_cords, player):
 		return True
 
 	# In check from cardinal direction? queen/rook
-	if in_check_from_cardinal(board, pk_cords, player):
+	elif in_check_from_cardinal(board, pk_cords, player):
 		return True
 
 	# In check from diagonal direction? queen/bishop
-	if in_check_from_diagonal(board, pk_cords, player):
+	elif in_check_from_diagonal(board, pk_cords, player):
 		return True
 
 	return False
@@ -182,27 +205,44 @@ def is_mate(board, player):
 		Determine if the king is in checkmate or stalemate, 
 		returns a string to indicate the result
 	"""
-	return None
-	# Find cordinates of the king
-	pk_cords = find_king(board, player)
+	# Comment comment comment
+	for row in range(8):
+		for col in range(8):
+			if board.map[row][col].get_color() == player:
+				piece_type = board.map[row][col].get_type()
 
-	# Find if any threats to the king
-	threats = is_king_in_check(board, player)
+				if piece_type == "knight":
+					p_moves = knight_moves
+				elif piece_type == "bishop":
+					p_moves = bishop_moves
+				elif piece_type == "rook":
+					p_moves = rook_moves
+				elif piece_type == "queen":
+					p_moves = queen_moves
+				elif piece_type == "king":
+					p_moves = king_moves
+				elif piece_type == "pawn" and player == "black":
+					p_moves = b_pawn_moves
+				else:
+					p_moves = w_pawn_moves
 
-	# Check if it is possible to move out of the way
-	for move in king_moves:
-		test_board = deepcopy(board)
-	
-		k_cords = [pk_cords[0] + move[0], pk_cords[1] + move[1]]
+				for move in p_moves:
+					end0 = row + move[0]
+					end1 = col + move[1]
 
-		if k_cords[0] < 8 and k_cords[0] > 1 and k_cords[1] > 0 and k_cords[1] < 8:
+					if end0 < 8 and end1 < 8 and end0 >= 0 and end1 >= 0: 
+						cords = [row, col, end0, end1]
+						test_board = deepcopy(board)
+						vec = test_board.move(cords, player)
+#						print(str(vec) + str(cords))
+						if vec[0]: 
+#							print(colored("Ayy OK", "green"))
+							return None
 
-			if test_board.map[k_cords[0]][k_cords[1]].get_color() != player:
-				test_board.map[k_cords[0]][k_cords[1]] = test_board.map[pk_cords[0]][pk_cords[1]]
-				test_board.map[pk_cords[0]][pk_cords[1]] = Piece(" ", " ", " ")
+	if is_king_in_check(board, player):
+		cords = "checkmate"
+	else:
+		cords = "stalemate"
 
-				if not(is_king_in_check(test_board, player)):
-					return None
+	return cords
 
-	# Check if it is possible to take the offending piece
-	

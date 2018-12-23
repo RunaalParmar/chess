@@ -33,8 +33,11 @@ def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 
 	# Either color moving the pawn 2 steps
 	if col_vec == 0 and abs(row_vec) == 2:
-		if cords[0] != 1 and cords[0] != 6:
-			vec = [False, "Pawn can only move 2 spaces on its first move!"]
+		if board.map[cords[2]][cords[3]].get_symbol() == " ":
+			if cords[0] != 1 and cords[0] != 6:
+				vec = [False, "Pawn can only move 2 spaces on its first move!"]
+		else:
+			vec = [False, "Pawn cannot walk into opposing piece!"]
 
 	# Either color moving the pawn 1 step
 	elif white_move or black_move:
