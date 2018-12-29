@@ -234,9 +234,7 @@ def is_mate(board, player):
 						cords = [row, col, end0, end1]
 						test_board = deepcopy(board)
 						vec = test_board.move(cords, player)
-#						print(str(vec) + str(cords))
 						if vec[0]: 
-#							print(colored("Ayy OK", "green"))
 							return None
 
 	if is_king_in_check(board, player):

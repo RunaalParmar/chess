@@ -44,7 +44,7 @@ while True:
 		print(colored("The match ends in a draw!", "green"))
 		cords = "exit"
 	elif cords == None:
-		cords = my_board.clean_intake(player) 
+		cords = my_board.clean_intake(player, turn_num) 
 
 	if cords == "undo":
 		if turn_num == 1:

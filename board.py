@@ -105,7 +105,7 @@ class Board:
 			print(colored("=", board_color), end="")
 		print(colored("==\n", board_color))
 			
-	def clean_intake(self, player): # readline
+	def clean_intake(self, player, turn_num):
 		"""
 			Takes raw input from the user and parses it.
 			Ensures proper formatting, and general sanitization
@@ -113,11 +113,12 @@ class Board:
 		"""
 		while True:
 			try:
-				print(player + " move.")
+				print("turn " + str(turn_num) + ": " + player + " move.")
 				intake = input("Enter start and end co-ordinates: ")
-			except Exception as err: 
-				print(colored("Encountered issues:" + err, "red"))
-				raise 
+			except KeyboardInterrupt: 
+				print("")
+				cords = "exit"
+				return cords
 
 			# special entries require seperate actions
 			if intake == "undo" or intake == "exit" or intake == "quit":
