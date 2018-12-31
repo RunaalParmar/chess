@@ -9,7 +9,7 @@ from copy import deepcopy
 from piece import Piece
 import checks
 
-def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
+def is_valid_pawn_move(board, cords, player, row_vec, col_vec, prev_board):
 	"""
 		Checks if the requested move is valid for a pawn
 	"""
@@ -52,8 +52,29 @@ def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 
 	# Either color attacking with the pawn
 	elif white_attacking or black_attacking:
-		if board.map[cords[2]][cords[3]].get_symbol() == " ":
+		if board.map[cords[2]][cords[3]].get_type() == " ":
+			# En passant for white pawn
+			if white_attacking:
+				if board.map[cords[2]+1][cords[3]].get_type() == "pawn":
+					if board.map[cords[2]+1][cords[3]].get_color() == "black":
+						if prev_board.map[cords[2]+1][cords[3]].get_type() == " ":
+							if prev_board.map[cords[2]][cords[3]].get_type() == " ":
+								vec = [True]
+								board.map[cords[2]+1][cords[3]] = Piece(" ", " ", " ", " ")
+								return vec
+			# En passant for black pawn
+			elif black_attacking:
+				if board.map[cords[2]-1][cords[3]].get_type() == "pawn":
+					if board.map[cords[2]-1][cords[3]].get_color() == "white":
+						if prev_board.map[cords[2]-1][cords[3]].get_type() == " ":
+							if prev_board.map[cords[2]][cords[3]].get_type() == " ":
+								vec = [True]
+								board.map[cords[2]-1][cords[3]] = Piece(" ", " ", " ", " ")
+								return vec
+			# No valid piece to attack!
 			vec = [False, "No pieces for the pawn to attack!"]
+
+		# Found a piece for the pawn to attack
 		elif board.map[cords[2]][cords[3]].get_color() != player:
 			if cords[2] == 7 or cords[2] == 0:
 				board.map[cords[0]][cords[1]].promote(cords, player)

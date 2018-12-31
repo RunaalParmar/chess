@@ -207,7 +207,7 @@ def is_king_in_check(board, player):
 
 	return False
 
-def is_mate(board, player):
+def is_mate(board, player, prev_board):
 	"""
 		Determine if the king is in checkmate or stalemate, 
 		returns a string to indicate the result
@@ -242,7 +242,7 @@ def is_mate(board, player):
 					if end0 < 8 and end1 < 8 and end0 >= 0 and end1 >= 0: 
 						cords = [row, col, end0, end1]
 						test_board = deepcopy(board)
-						vec = test_board.move(cords, player)
+						vec = test_board.move(cords, player, prev_board)
 						if vec[0]: 
 							return None
 

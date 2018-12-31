@@ -21,6 +21,7 @@ def get_player(turn_num):
 
 # Save initial state of the board as turn 0
 my_board = Board()
+prev_board = deepcopy(my_board)
 saved_boards = []
 saved_boards.insert(0, deepcopy(my_board))
 
@@ -37,7 +38,7 @@ while True:
 
 	# Cords holds the coordinates for the moves, but also holds 
 	# any special commands, such as exit, quit, undo, etc.
-	cords = checks.is_mate(my_board, player)
+	cords = checks.is_mate(my_board, player, prev_board)
 
 	# If the player is in checkmate, end the game and display the winner
 	if cords == "checkmate":
@@ -62,11 +63,13 @@ while True:
 			turn_num -= 1
 			saved_boards.pop()
 			my_board = deepcopy(saved_boards[turn_num - 1])
+			prev_board = deepcopy(saved_boards[turn_num - 2])
 	# Undo to desired turn, if possible
 	elif cords[:4] == "undo":
 		turn_num = int(cords[5:])
-		my_board = deepcopy(saved_boards[turn_num])
-		saved_boards = saved_boards[0:turn_num]
+		my_board = deepcopy(saved_boards[turn_num - 1])
+		prev_board = deepcopy(saved_boards[turn_num - 2])
+		saved_boards = saved_boards[0:turn_num - 1]
 
 	# End game if requested by "exit" or "quit"
 	elif cords == "exit" or cords == "quit":
@@ -75,8 +78,9 @@ while True:
 
 	# If no special actions are required, attempt to move the piece
 	else:
-		vec = my_board.move(cords, player)
+		vec = my_board.move(cords, player, prev_board)
 		if vec[0]:
+			prev_board = deepcopy(saved_boards[turn_num - 1])
 			saved_boards.insert(turn_num, deepcopy(my_board))
 			turn_num += 1
 		else:

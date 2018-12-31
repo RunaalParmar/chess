@@ -128,10 +128,10 @@ class Board:
 			if intake[:4] == "undo":
 				try:
 					num = int(intake[5:])
-					if num < turn_num and num >= 0:
+					if num < turn_num and num > 0:
 						return intake
 					else:
-						print(colored("Cannot undo to future turn!", "red"))
+						print(colored("Cannot undo to turn " + str(num) + "!", "red"))
 				except:
 					print(colored("Please enter a valid undo command!", "red"))
 
@@ -155,7 +155,7 @@ class Board:
 				cords = [start1, start2, end1, end2]
 				return cords
 
-	def move(self, cords, player):
+	def move(self, cords, player, prev_board):
 		"""
 			Moves pieces. Calls check valid to ensure legal moves.
 		"""
@@ -226,9 +226,9 @@ class Board:
 
 		# Validate the move for a pawn
 		elif type_of_piece == "pawn":
-			vec = validate_move.is_valid_pawn_move(self, cords, player, row_vec, col_vec)
+			vec = validate_move.is_valid_pawn_move(self, cords, player, row_vec, col_vec, prev_board)
 
-		# return an error message is something is wrong
+		# All checks passed, making the requested move
 		if vec[0]:
 			self.map[cords[2]][cords[3]] = self.map[cords[0]][cords[1]]
 			self.map[cords[2]][cords[3]].set_has_moved()
