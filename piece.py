@@ -13,13 +13,20 @@ class Piece:
 	"""
 		Standard piece definition
 	"""
-	def __init__(self, piece_type, color, symbol):
+	def __init__(self, piece_type, color, symbol, has_moved):
 		"""
 			Piece constructor
 		"""
 		self.piece_type = piece_type
 		self.color = color
 		self.symbol = symbol
+		self.has_moved = has_moved
+
+	def get_has_moved(self):
+		"""
+			Get boolean tracking if the piece has been moved
+		"""
+		return self.has_moved
 
 	def get_symbol(self):
 		"""
@@ -45,6 +52,12 @@ class Piece:
 		"""
 		self.piece_type = req_type
 
+	def set_has_moved(self):
+		"""
+			Sets the piece to has been moved
+		"""
+		self.has_moved = "True"
+
 	def set_symbol(self, new_symbol):
 		"""
 			Sets new symbol for the piece
@@ -55,12 +68,14 @@ class Piece:
 		"""
 			Promotes a pawn
 		"""
+		# Keep asking for a piece type, until a valid one is entered
 		while (self.get_type() == "pawn"):
 			req_type = input("What do you want to promote your pawn to?: ")
 			req_type = req_type.lower()
 
 			if (req_type not in valid_promote):
 				print("Invalid Input")
+			# Set the new piece to the correct type and symbol
 			else:
 				self.set_type(req_type)
 				if self.get_color() == "white":

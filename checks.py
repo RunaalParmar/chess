@@ -8,22 +8,27 @@ from copy import deepcopy
 from termcolor import colored
 from piece import Piece
 
+# Valid moves for a knight
 knight_moves = [
 	(1,2),(2,1),(-1,2),(-2,1),(1,-2),(2,-1),(-1,-2),(-2,-1)
 ]
 
+# Valid moves for a king (other than castling)
 king_moves = [
 	(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)
 ]
 
+# Valid moves for a black pawn
 b_pawn_moves = [
 	(2,0),(1,0),(1,1),(1,-1)
 ]
 
+# Valid moves for a white pawn
 w_pawn_moves = [
 	(-2,0),(-1,0),(-1,1),(-1,-1)
 ]
 
+# Valid moves for a rook
 rook_moves = [
 	(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),
 	(0,-1),(0,-2),(0,-3),(0,-4),(0,-5),(0,-6),(0,-7),
@@ -31,6 +36,7 @@ rook_moves = [
 	(-1,0),(-2,0),(-3,0),(-4,0),(-5,0),(-6,0),(-7,0)
 ]
 
+# Valid moves for a bishop
 bishop_moves = [
 	(1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),
 	(-1,-1),(-2,-2),(-3,-3),(-4,-4),(-5,-5),(-6,-6),(-7,-7),
@@ -38,6 +44,7 @@ bishop_moves = [
 	(-1,1),(-2,2),(-3,3),(-4,4),(-5,5),(-6,6),(-7,7)
 ]
 
+# Valid moves for a queen
 queen_moves = rook_moves + bishop_moves
 
 def find_king(board, player):
@@ -103,7 +110,7 @@ def in_check_from_cardinal(board, pk_cords, player):
 	"""
 		Determine if in check from enemy rook or queen (non diagonal)
 	"""
-	null_piece = Piece(" ", " ", " ")
+	null_piece = Piece(" ", " ", " ", " ")
 	flag = [deepcopy(null_piece) for i in range(4)]
 
 	for i in range(1, 8):
@@ -139,17 +146,17 @@ def in_check_from_diagonal(board, pk_cords, player):
 	"""
 		Determines if in check from a diagonal queen/bishop
 	"""
-	null_piece = Piece(" ", " ", " ")
+	null_piece = Piece(" ", " ", " ", " ")
 	flag = [deepcopy(null_piece) for i in range(4)]
 
 	for i in range(1, 8):
 		# Ensure no checks a1 diagonal:
-		if pk_cords[0] + i < 8 and pk_cords[1] - i > 0:
+		if pk_cords[0] + i < 8 and pk_cords[1] - i >= 0:
 			if flag[0].get_type() == " ":
 				flag[0] = board.map[pk_cords[0]+i][pk_cords[1]-i]
 
 		# Ensure no checks a8 diagonal:
-		if pk_cords[0] - i > 0 and pk_cords[1] - i > 0:
+		if pk_cords[0] - i >= 0 and pk_cords[1] - i >= 0:
 			if flag[1].get_type() == " ":
 				flag[1] = board.map[pk_cords[0]-i][pk_cords[1]-i]
 
@@ -159,7 +166,7 @@ def in_check_from_diagonal(board, pk_cords, player):
 				flag[2] = board.map[pk_cords[0]+i][pk_cords[1]+i]
 
 		# Ensure no checks h8 diagonal:
-		if pk_cords[0] - i > 0 and pk_cords[1] + i < 8:
+		if pk_cords[0] - i >= 0 and pk_cords[1] + i < 8:
 			if flag[3].get_type() == " ":
 				flag[3] = board.map[pk_cords[0]-i][pk_cords[1]+i]
 
@@ -211,6 +218,7 @@ def is_mate(board, player):
 			if board.map[row][col].get_color() == player:
 				piece_type = board.map[row][col].get_type()
 
+				# Assign correct moves array to variable
 				if piece_type == "knight":
 					p_moves = knight_moves
 				elif piece_type == "bishop":
@@ -226,6 +234,7 @@ def is_mate(board, player):
 				else:
 					p_moves = w_pawn_moves
 
+				# Loop through all valid moves to determine if in check
 				for move in p_moves:
 					end0 = row + move[0]
 					end1 = col + move[1]
@@ -237,6 +246,7 @@ def is_mate(board, player):
 						if vec[0]: 
 							return None
 
+	# If no valid moves are available, and in check: checkmate, else stalemate
 	if is_king_in_check(board, player):
 		cords = "checkmate"
 	else:

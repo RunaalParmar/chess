@@ -26,35 +26,35 @@ class Board:
 			Initialize board for the beginning of play
 		"""
 		# create null piece object
-		null_piece = Piece(" ", " ", " ")
+		null_piece = Piece(" ", " ", " ", " ")
 
 		# Create board, initialized to null pieces
 		self.map = [[deepcopy(null_piece) for i in range(8)] for i in range(8)]
 
 		# Initialize pawns for both sides
 		for i in range(8):
-			self.map[1][i] = Piece("pawn", "black", "\u265f")
-			self.map[6][i] = Piece("pawn", "white", "\u2659")
+			self.map[1][i] = Piece("pawn", "black", "\u265f", False)
+			self.map[6][i] = Piece("pawn", "white", "\u2659", False)
 
 		# Initialize major pieces for black side 
-		self.map[0][0] = Piece("rook",   "black", "\u265c")
-		self.map[0][1] = Piece("knight", "black", "\u265e")
-		self.map[0][2] = Piece("bishop", "black", "\u265d")
-		self.map[0][3] = Piece("queen",  "black", "\u265b")
-		self.map[0][4] = Piece("king",   "black", "\u265a")
-		self.map[0][5] = Piece("bishop", "black", "\u265d")
-		self.map[0][6] = Piece("knight", "black", "\u265e")
-		self.map[0][7] = Piece("rook",   "black", "\u265c")
+		self.map[0][0] = Piece("rook",   "black", "\u265c", False)
+		self.map[0][1] = Piece("knight", "black", "\u265e", False)
+		self.map[0][2] = Piece("bishop", "black", "\u265d", False)
+		self.map[0][3] = Piece("queen",  "black", "\u265b", False)
+		self.map[0][4] = Piece("king",   "black", "\u265a", False)
+		self.map[0][5] = Piece("bishop", "black", "\u265d", False)
+		self.map[0][6] = Piece("knight", "black", "\u265e", False)
+		self.map[0][7] = Piece("rook",   "black", "\u265c", False)
 
 		# Initialize major pieces for white side 
-		self.map[7][0] = Piece("rook",   "white", "\u2656")
-		self.map[7][1] = Piece("knight", "white", "\u2658")
-		self.map[7][2] = Piece("bishop", "white", "\u2657")
-		self.map[7][3] = Piece("queen",  "white", "\u2655")
-		self.map[7][4] = Piece("king",   "white", "\u2654")
-		self.map[7][5] = Piece("bishop", "white", "\u2657")
-		self.map[7][6] = Piece("knight", "white", "\u2658")
-		self.map[7][7] = Piece("rook",   "white", "\u2656")
+		self.map[7][0] = Piece("rook",   "white", "\u2656", False)
+		self.map[7][1] = Piece("knight", "white", "\u2658", False)
+		self.map[7][2] = Piece("bishop", "white", "\u2657", False)
+		self.map[7][3] = Piece("queen",  "white", "\u2655", False)
+		self.map[7][4] = Piece("king",   "white", "\u2654", False)
+		self.map[7][5] = Piece("bishop", "white", "\u2657", False)
+		self.map[7][6] = Piece("knight", "white", "\u2658", False)
+		self.map[7][7] = Piece("rook",   "white", "\u2656", False)
 
 	def map_print(self):
 		"""
@@ -120,10 +120,11 @@ class Board:
 				cords = "exit"
 				return cords
 
-			# special entries require seperate actions
+			# Special entries require seperate actions
 			if intake == "undo" or intake == "exit" or intake == "quit":
 				return intake
 
+			# Handle undoing to specific turn number
 			if intake[:4] == "undo":
 				try:
 					num = int(intake[5:])
@@ -134,6 +135,7 @@ class Board:
 				except:
 					print(colored("Please enter a valid undo command!", "red"))
 
+			# Ensure valid alpha-numerical inputs are being used
 			if len(intake) != 5:
 				print(colored("Please enter a valid co-ordinate pair", "red"))
 			elif intake[0] not in "abcdefghABCDEFGH":
@@ -145,6 +147,7 @@ class Board:
 			elif intake[4] not in "12345678":
 				print(colored("Please enter a valid co-ordinate pair", "red"))
 			else:
+				# No issues, assigning values to cordinates array
 				start1 = 8 - int(intake[1])
 				start2 = int(ord(intake[0].lower())-97)
 				end1 = 8 - int(intake[4])
@@ -202,7 +205,7 @@ class Board:
 
 		# Validate the move for a king
 		elif type_of_piece == "king":
-			vec = validate_move.is_valid_king_move(self, row_vec, col_vec)
+			vec = validate_move.is_valid_king_move(self, cords, row_vec, col_vec, player)
 
 		# return an error message is something is wrong
 		if not(vec[0]):
@@ -213,7 +216,8 @@ class Board:
 
 		# Make the desired move on duplicate board
 		test_board.map[cords[2]][cords[3]] = test_board.map[cords[0]][cords[1]]
-		test_board.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
+		test_board.map[cords[2]][cords[3]].set_has_moved()
+		test_board.map[cords[0]][cords[1]] = Piece(" ", " ", " ", " ")
 
 		# Ensure the move does not leave the king in check
 		threat = checks.is_king_in_check(test_board, player)
@@ -227,6 +231,7 @@ class Board:
 		# return an error message is something is wrong
 		if vec[0]:
 			self.map[cords[2]][cords[3]] = self.map[cords[0]][cords[1]]
-			self.map[cords[0]][cords[1]] = Piece(" ", " ", " ")
+			self.map[cords[2]][cords[3]].set_has_moved()
+			self.map[cords[0]][cords[1]] = Piece(" ", " ", " ", " ")
 
 		return vec

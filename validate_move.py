@@ -5,6 +5,9 @@ By: Runaal Parmar
 Dec 17, 2018
 """
 from termcolor import colored
+from copy import deepcopy
+from piece import Piece
+import checks
 
 def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 	"""
@@ -61,16 +64,56 @@ def is_valid_pawn_move(board, cords, player, row_vec, col_vec):
 
 	return vec
 
-def is_valid_king_move(board, row_vec, col_vec):
+def is_valid_king_move(board, cords, row_vec, col_vec, player):
 	"""
 		Checks if the requested move is valid for the king
 	"""
-	# Default return
-	vec = [True]
-
 	# The King can move one step in any direction
-	if abs(row_vec) > 1 or abs(col_vec) > 1:
-		vec = [False, "This is not a valid move for a King!"]
+	if abs(row_vec) <= 1 and abs(col_vec) <= 1:
+		vec = [True]
+		return vec
+
+	# Check if castling
+	if abs(col_vec) == 2:
+		if board.map[cords[0]][cords[1]].get_has_moved() == False:
+			if col_vec < 0:
+				col = 0
+			else:
+				col = 7
+			mid_col = cords[1] + (col_vec//2)
+
+			if board.map[cords[0]][mid_col].get_type() == " ":
+				if board.map[cords[0]][col].get_has_moved() == False:
+					if checks.is_king_in_check(board, player) == True:
+						vec = [False, "Cannot castle while in check!"]
+						return vec
+
+					test_board = deepcopy(board)
+					test_board.map[cords[0]][mid_col] = test_board.map[cords[0]][cords[1]]
+					test_board.map[cords[0]][cords[1]] = Piece(" ", " ", " ", " ")
+					if checks.is_king_in_check(test_board, player) == True:
+						vec = [False, "Cannot castle through a check!"]
+						return vec
+
+					test_board = deepcopy(board)
+					test_board.map[cords[0]][cords[3]] = test_board.map[cords[0]][cords[1]]
+					test_board.map[cords[0]][cords[1]] = Piece(" ", " ", " ", " ")
+					if checks.is_king_in_check(test_board, player) == True:
+						vec = [False, "Cannot castle into a check!"]
+						return vec
+
+					# If this point is reached, the castle move is valid
+					board.map[cords[0]][mid_col] = board.map[cords[0]][col]
+					board.map[cords[0]][mid_col].set_has_moved()
+					board.map[cords[0]][col] = Piece(" ", " ", " ", " ")
+					vec = [True]
+					return vec
+
+			else:
+				vec = [False, "Cannot castle through a piece!"]
+				return vec
+
+	vec = [False, "This is not a valid move for a King!"]
 	return vec
 
 def is_valid_knight_move(board, row_vec, col_vec):
