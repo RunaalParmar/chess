@@ -124,6 +124,16 @@ class Board:
 			if intake == "undo" or intake == "exit" or intake == "quit":
 				return intake
 
+			if intake[:4] == "undo":
+				try:
+					num = int(intake[5:])
+					if num < turn_num and num >= 0:
+						return intake
+					else:
+						print(colored("Cannot undo to future turn!", "red"))
+				except:
+					print(colored("Please enter a valid undo command!", "red"))
+
 			if len(intake) != 5:
 				print(colored("Please enter a valid co-ordinate pair", "red"))
 			elif intake[0] not in "abcdefghABCDEFGH":

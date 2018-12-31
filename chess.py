@@ -53,6 +53,10 @@ while True:
 			turn_num -= 1
 			saved_boards.pop()
 			my_board = deepcopy(saved_boards[turn_num - 1])
+	elif cords[:4] == "undo":
+		turn_num = int(cords[5:])
+		my_board = deepcopy(saved_boards[turn_num])
+		saved_boards = saved_boards[0:turn_num]
 	elif cords == "exit" or cords == "quit":
 		print(colored("Exiting...", "red"))
 		exit()
