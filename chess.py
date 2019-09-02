@@ -4,6 +4,7 @@ chess.py - Text-based chess game
 By: Runaal Parmar
 Dec 9, 2018
 """
+import os
 from copy import deepcopy
 from termcolor import colored
 from board import Board
@@ -83,6 +84,8 @@ while True:
 			prev_board = deepcopy(saved_boards[turn_num - 1])
 			saved_boards.insert(turn_num, deepcopy(my_board))
 			turn_num += 1
+			os.system('clear')
 		else:
 			# Print error message
+			os.system('clear')
 			print(colored(vec[1], "red"))
